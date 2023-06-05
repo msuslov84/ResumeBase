@@ -3,6 +3,8 @@ package com.suslov.basejava.model.section;
 import java.util.Objects;
 
 public class Personal extends AbstractSection {
+    public static final long serialVersionUID = 1L;
+
     private final String content;
 
     public Personal(String content) {

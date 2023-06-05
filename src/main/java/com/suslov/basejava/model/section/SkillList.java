@@ -3,6 +3,8 @@ package com.suslov.basejava.model.section;
 import java.util.*;
 
 public class SkillList extends AbstractSection {
+    public static final long serialVersionUID = 1L;
+
     private final List<String> skills;
 
     public SkillList(List<String> skills) {

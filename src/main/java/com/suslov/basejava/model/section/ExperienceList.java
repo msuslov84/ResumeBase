@@ -5,11 +5,13 @@ import com.suslov.basejava.model.Experience;
 import java.util.*;
 
 public class ExperienceList extends AbstractSection {
+    public static final long serialVersionUID = 1L;
+
     private final List<Experience> experiences;
 
     public ExperienceList(List<Experience> experiences) {
         this.experiences = new ArrayList<>(Objects.requireNonNull(experiences,
-                "Error: experience list must not be null"));
+                "Error: list of experiences must not be null"));
     }
 
     public ExperienceList(Experience... experiences) {

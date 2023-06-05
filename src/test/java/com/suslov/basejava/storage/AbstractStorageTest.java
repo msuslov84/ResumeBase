@@ -1,17 +1,21 @@
 package com.suslov.basejava.storage;
 
+import com.suslov.basejava.ResumeTestData;
 import com.suslov.basejava.exception.ExistStorageException;
 import com.suslov.basejava.exception.NotExistStorageException;
 import com.suslov.basejava.model.Resume;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class AbstractStorageTest {
+    protected static final File STORAGE_DIR = new File("D:\\Java\\Projects\\JavaOnlineProjects\\ResumeBase\\storage");
+
     protected final Storage storage;
 
     private static final String UUID_1 = "uuid1";
@@ -19,10 +23,10 @@ public abstract class AbstractStorageTest {
     private static final String UUID_3 = "uuid3";
     private static final String UUID_4 = "uuid4";
 
-    private static final Resume RESUME_1 = new Resume(UUID_1, "Name1");
-    private static final Resume RESUME_2 = new Resume(UUID_2, "Name2");
-    private static final Resume RESUME_3 = new Resume(UUID_3, "Name3");
-    private static final Resume RESUME_4 = new Resume(UUID_4, "Name4");
+    private static final Resume RESUME_1 = ResumeTestData.create(UUID_1, "Name1");
+    private static final Resume RESUME_2 = ResumeTestData.create(UUID_2, "Name2");
+    private static final Resume RESUME_3 = ResumeTestData.create(UUID_3, "Name3");
+    private static final Resume RESUME_4 = ResumeTestData.create(UUID_4, "Name4");
 
     public AbstractStorageTest(Storage storage) {
         this.storage = storage;
@@ -51,7 +55,7 @@ public abstract class AbstractStorageTest {
     void update() {
         Resume newResume = new Resume(UUID_1, "New Name");
         storage.update(newResume);
-        assertSame(newResume, storage.get(UUID_1));
+        assertEquals(newResume, storage.get(UUID_1));
     }
 
     @Test

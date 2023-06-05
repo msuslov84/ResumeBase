@@ -3,12 +3,15 @@ package com.suslov.basejava.model;
 import com.suslov.basejava.model.section.AbstractSection;
 import com.suslov.basejava.model.section.SectionType;
 
+import java.io.Serializable;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-public class Resume implements Comparable<Resume> {
+public class Resume implements Comparable<Resume>, Serializable {
+    public static final long serialVersionUID = 1L;
+
     private final String uuid;
     private final String fullName;
     private final Map<ContactType, String> contacts = new EnumMap<>(ContactType.class);
@@ -33,14 +36,21 @@ public class Resume implements Comparable<Resume> {
         return fullName;
     }
 
+    public void addContact(ContactType type, String value) {
+        contacts.put(type, value);
+    }
+
     public String getContact(ContactType type) {
         return contacts.get(type);
+    }
+
+    public void addSection(SectionType type, AbstractSection value) {
+        sections.put(type, value);
     }
 
     public AbstractSection getSection(SectionType type) {
         return sections.get(type);
     }
-
 
     @Override
     public boolean equals(Object o) {

@@ -1,12 +1,19 @@
 package com.suslov.basejava.model;
 
+import com.suslov.basejava.util.DateUtil;
+
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public class Experience {
+import static com.suslov.basejava.util.DateUtil.NOW;
+
+public class Experience implements Serializable {
+    public static final long serialVersionUID = 1L;
+
     private Link homePage;
     private final List<Period> periods;
 
@@ -35,11 +42,17 @@ public class Experience {
         return Collections.unmodifiableList(periods);
     }
 
-    public static class Period {
+    public static class Period implements Serializable {
+        public static final long serialVersionUID = 1L;
+
         private final String title;
         private final LocalDate periodFrom;
         private final LocalDate periodTo;
         private final String description;
+
+        public Period(String title, LocalDate periodFrom, String description) {
+            this(title, periodFrom, NOW, description);
+        }
 
         public Period(String title, LocalDate periodFrom, LocalDate periodTo, String description) {
             this.title = Objects.requireNonNull(title, "Title must not be null");
@@ -87,7 +100,6 @@ public class Experience {
                     ", description='" + description + '\'' +
                     "}";
         }
-
     }
 
     @Override
