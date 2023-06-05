@@ -36,7 +36,7 @@ public class DataSerializer implements Serializer {
 
     private void writeResumeContacts(DataOutputStream dos, Resume resume) throws IOException {
         Map<ContactType, String> contacts = resume.getContacts();
-        writeCollection(contacts.entrySet(), dos, entry -> {
+        writeFromCollection(contacts.entrySet(), dos, entry -> {
             dos.writeUTF(entry.getKey().name());
             dos.writeUTF(entry.getValue());
         });
@@ -44,7 +44,7 @@ public class DataSerializer implements Serializer {
 
     private void writeResumeSections(DataOutputStream dos, Resume resume) throws IOException {
         Map<SectionType, AbstractSection> sections = resume.getSections();
-        writeCollection(sections.entrySet(), dos, entry -> {
+        writeFromCollection(sections.entrySet(), dos, entry -> {
             dos.writeUTF(entry.getKey().name());
             switch (entry.getKey()) {
                 case OBJECTIVE:
@@ -53,16 +53,16 @@ public class DataSerializer implements Serializer {
                     break;
                 case ACHIEVEMENT:
                 case QUALIFICATIONS:
-                    writeCollection(((SkillList) entry.getValue()).getSkills(), dos, dos::writeUTF);
+                    writeFromCollection(((SkillList) entry.getValue()).getSkills(), dos, dos::writeUTF);
                     break;
                 case EXPERIENCE:
                 case EDUCATION:
-                    writeCollection(((ExperienceList) entry.getValue()).getExperiences(), dos, experience -> {
+                    writeFromCollection(((ExperienceList) entry.getValue()).getExperiences(), dos, experience -> {
                         Link link = experience.getHomePage();
                         dos.writeUTF(link != null ? link.getName() : "");
                         dos.writeUTF(link != null ? link.getUrl() : "");
                         List<Experience.Period> periods = experience.getPeriods();
-                        writeCollection(periods, dos, period -> {
+                        writeFromCollection(periods, dos, period -> {
                             dos.writeUTF(period.getTitle());
                             dos.writeUTF(convertFromLocalDate(period.getPeriodFrom()));
                             dos.writeUTF(convertFromLocalDate(period.getPeriodTo()));
@@ -73,7 +73,7 @@ public class DataSerializer implements Serializer {
         });
     }
 
-    private <T> void writeCollection(Collection<T> collection, DataOutputStream out, DataConsumer<T> action)
+    private <T> void writeFromCollection(Collection<T> collection, DataOutputStream out, DataConsumer<T> action)
             throws IOException {
         Objects.requireNonNull(action);
         Objects.requireNonNull(collection);
@@ -90,11 +90,11 @@ public class DataSerializer implements Serializer {
     }
 
     private void readResumeContacts(DataInputStream dis, Resume resume) throws IOException {
-        readWithException(dis, () -> resume.addContact(ContactType.valueOf(dis.readUTF()), dis.readUTF()));
+        readToCollection(dis, () -> resume.addContact(ContactType.valueOf(dis.readUTF()), dis.readUTF()));
     }
 
     private void readResumeSections(DataInputStream dis, Resume resume) throws IOException {
-        readWithException(dis, () -> {
+        readToCollection(dis, () -> {
             SectionType sectionType = SectionType.valueOf(dis.readUTF());
             switch (sectionType) {
                 case OBJECTIVE:
@@ -104,16 +104,16 @@ public class DataSerializer implements Serializer {
                 case ACHIEVEMENT:
                 case QUALIFICATIONS:
                     SkillList skillList = new SkillList();
-                    readWithException(dis, () -> skillList.addSkill(dis.readUTF()));
+                    readToCollection(dis, () -> skillList.addSkill(dis.readUTF()));
                     resume.addSection(sectionType, skillList);
                     break;
                 case EXPERIENCE:
                 case EDUCATION:
                     List<Experience> list = new ArrayList<>();
-                    readWithException(dis, () -> {
+                    readToCollection(dis, () -> {
                         Experience experience = new Experience();
                         experience.setHomePage(new Link(dis.readUTF(), dis.readUTF()));
-                        readWithException(dis, () -> experience.addPeriod(new Experience.Period(dis.readUTF(),
+                        readToCollection(dis, () -> experience.addPeriod(new Experience.Period(dis.readUTF(),
                                 convertToLocalDate(dis.readUTF()), convertToLocalDate(dis.readUTF()), dis.readUTF())));
                         list.add(experience);
                     });
@@ -122,17 +122,17 @@ public class DataSerializer implements Serializer {
         });
     }
 
-    private void readWithException(DataInputStream in, DataFunction action) throws IOException {
+    private void readToCollection(DataInputStream in, DataFunction action) throws IOException {
         int size = in.readInt();
         for (int i = 0; i < size; i++) {
             action.set();
         }
     }
 
-    private LocalDate convertToLocalDate(String convertValue) {
+    private LocalDate convertToLocalDate(String convertValue) throws IllegalArgumentException {
         String[] split = convertValue.split(";");
         if (split.length != 3) {
-            throw new IllegalArgumentException("Error of parsing to local date value");
+            throw new IllegalArgumentException("Error parsing local date value '" + convertValue + "'");
         }
         return LocalDate.of(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]));
     }

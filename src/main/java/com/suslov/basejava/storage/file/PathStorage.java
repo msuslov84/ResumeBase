@@ -53,7 +53,7 @@ public class PathStorage extends AbstractStorage<Path> {
     protected Resume getResumeFromStorage(Path path) {
         try {
             return serializer.readFromFile(new BufferedInputStream(Files.newInputStream(path)));
-        } catch (IOException exp) {
+        } catch (IllegalArgumentException | IOException exp) {
             throw new StorageException("Error deserializing resume by path '" + path.toAbsolutePath() + "'", exp);
         }
     }
