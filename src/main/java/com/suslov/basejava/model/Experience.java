@@ -1,7 +1,5 @@
 package com.suslov.basejava.model;
 
-import com.suslov.basejava.util.DateUtil;
-
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Arrays;

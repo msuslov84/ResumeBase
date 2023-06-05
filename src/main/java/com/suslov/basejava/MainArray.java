@@ -1,11 +1,10 @@
 package com.suslov.basejava;
 
 import com.suslov.basejava.model.Resume;
-import com.suslov.basejava.storage.array.ArrayStorage;
 import com.suslov.basejava.storage.Storage;
+import com.suslov.basejava.storage.array.ArrayStorage;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
