@@ -5,7 +5,10 @@ import java.util.Objects;
 public class Personal extends AbstractSection {
     public static final long serialVersionUID = 1L;
 
-    private final String content;
+    private String content;
+
+    public Personal() {
+    }
 
     public Personal(String content) {
         this.content = Objects.requireNonNull(content, "Error: personal content must not be null").trim();

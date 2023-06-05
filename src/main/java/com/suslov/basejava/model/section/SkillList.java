@@ -5,7 +5,10 @@ import java.util.*;
 public class SkillList extends AbstractSection {
     public static final long serialVersionUID = 1L;
 
-    private final List<String> skills;
+    private List<String> skills;
+
+    public SkillList() {
+    }
 
     public SkillList(List<String> skills) {
         this.skills = new ArrayList<>(Objects.requireNonNull(skills, "Skills must not be null"));

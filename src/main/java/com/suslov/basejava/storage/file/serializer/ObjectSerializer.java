@@ -1,5 +1,6 @@
 package com.suslov.basejava.storage.file.serializer;
 
+import com.suslov.basejava.exception.SerializeException;
 import com.suslov.basejava.exception.StorageException;
 import com.suslov.basejava.model.Resume;
 
@@ -19,7 +20,7 @@ public class ObjectSerializer implements Serializer {
         try (ObjectInputStream ois = new ObjectInputStream(in)) {
             return (Resume) ois.readObject();
         } catch (ClassNotFoundException exp) {
-            throw new StorageException("Error reading resume from file", exp);
+            throw new SerializeException("Error reading resume from file", exp);
         }
     }
 }

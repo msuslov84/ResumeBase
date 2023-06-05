@@ -7,7 +7,10 @@ import java.util.*;
 public class ExperienceList extends AbstractSection {
     public static final long serialVersionUID = 1L;
 
-    private final List<Experience> experiences;
+    private List<Experience> experiences;
+
+    public ExperienceList() {
+    }
 
     public ExperienceList(List<Experience> experiences) {
         this.experiences = new ArrayList<>(Objects.requireNonNull(experiences,

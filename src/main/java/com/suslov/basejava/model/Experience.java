@@ -1,5 +1,10 @@
 package com.suslov.basejava.model;
 
+import com.suslov.basejava.util.LocalDateAdapter;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -9,11 +14,15 @@ import java.util.Objects;
 
 import static com.suslov.basejava.util.DateUtil.NOW;
 
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Experience implements Serializable {
     public static final long serialVersionUID = 1L;
 
     private Link homePage;
-    private final List<Period> periods;
+    private List<Period> periods;
+
+    public Experience() {
+    }
 
     public Experience(String homePage, String title, List<Period> periods) {
         this.homePage = new Link(title, homePage);
@@ -40,13 +49,19 @@ public class Experience implements Serializable {
         return Collections.unmodifiableList(periods);
     }
 
+    @XmlAccessorType(XmlAccessType.FIELD)
     public static class Period implements Serializable {
         public static final long serialVersionUID = 1L;
 
-        private final String title;
-        private final LocalDate periodFrom;
-        private final LocalDate periodTo;
-        private final String description;
+        private String title;
+        @XmlJavaTypeAdapter(LocalDateAdapter.class)
+        private LocalDate periodFrom;
+        @XmlJavaTypeAdapter(LocalDateAdapter.class)
+        private LocalDate periodTo;
+        private String description;
+
+        public Period() {
+        }
 
         public Period(String title, LocalDate periodFrom, String description) {
             this(title, periodFrom, NOW, description);
