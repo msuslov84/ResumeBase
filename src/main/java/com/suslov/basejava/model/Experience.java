@@ -7,10 +7,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static com.suslov.basejava.util.DateUtil.NOW;
 
@@ -19,7 +16,7 @@ public class Experience implements Serializable {
     public static final long serialVersionUID = 1L;
 
     private Link homePage;
-    private List<Period> periods;
+    private List<Period> periods = new ArrayList<>();
 
     public Experience() {
     }
