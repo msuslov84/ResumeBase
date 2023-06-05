@@ -1,6 +1,6 @@
 package com.suslov.basejava.model;
 
-import com.suslov.basejava.util.LocalDateAdapter;
+import com.suslov.basejava.util.adapter.LocalDateXmlAdapter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -54,9 +54,9 @@ public class Experience implements Serializable {
         public static final long serialVersionUID = 1L;
 
         private String title;
-        @XmlJavaTypeAdapter(LocalDateAdapter.class)
+        @XmlJavaTypeAdapter(LocalDateXmlAdapter.class)
         private LocalDate periodFrom;
-        @XmlJavaTypeAdapter(LocalDateAdapter.class)
+        @XmlJavaTypeAdapter(LocalDateXmlAdapter.class)
         private LocalDate periodTo;
         private String description;
 

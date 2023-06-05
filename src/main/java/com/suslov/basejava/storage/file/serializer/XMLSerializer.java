@@ -6,7 +6,7 @@ import com.suslov.basejava.model.Resume;
 import com.suslov.basejava.model.section.ExperienceList;
 import com.suslov.basejava.model.section.Personal;
 import com.suslov.basejava.model.section.SkillList;
-import com.suslov.basejava.util.XMLParser;
+import com.suslov.basejava.util.parser.XMLParser;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;

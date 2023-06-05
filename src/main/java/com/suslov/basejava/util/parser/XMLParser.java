@@ -1,4 +1,4 @@
-package com.suslov.basejava.util;
+package com.suslov.basejava.util.parser;
 
 import com.suslov.basejava.exception.SerializeException;
 import com.suslov.basejava.exception.StorageException;
