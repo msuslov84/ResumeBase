@@ -1,5 +1,6 @@
 package com.suslov.basejava.storage.file.serializer;
 
+import com.suslov.basejava.exception.SerializeException;
 import com.suslov.basejava.model.ContactType;
 import com.suslov.basejava.model.Experience;
 import com.suslov.basejava.model.Link;
@@ -132,7 +133,7 @@ public class DataSerializer implements Serializer {
     private LocalDate convertToLocalDate(String convertValue) throws IllegalArgumentException {
         String[] split = convertValue.split(";");
         if (split.length != 3) {
-            throw new IllegalArgumentException("Error parsing local date value '" + convertValue + "'");
+            throw new SerializeException("Error parsing local date value '" + convertValue + "'");
         }
         return LocalDate.of(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]));
     }

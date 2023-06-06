@@ -1,6 +1,7 @@
 package com.suslov.basejava.storage;
 
 import com.suslov.basejava.ResumeTestData;
+import com.suslov.basejava.config.StorageConfig;
 import com.suslov.basejava.exception.ExistStorageException;
 import com.suslov.basejava.exception.NotExistStorageException;
 import com.suslov.basejava.model.Resume;
@@ -10,18 +11,19 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public abstract class AbstractStorageTest {
-    protected static final File STORAGE_DIR = new File("D:\\Java\\Projects\\JavaOnlineProjects\\ResumeBase\\storage");
+    protected static final File STORAGE_DIR = StorageConfig.getInstance().getStorageDir();
 
     protected final Storage storage;
 
-    private static final String UUID_1 = "uuid1";
-    private static final String UUID_2 = "uuid2";
-    private static final String UUID_3 = "uuid3";
-    private static final String UUID_4 = "uuid4";
+    private static final String UUID_1 = UUID.randomUUID().toString();
+    private static final String UUID_2 = UUID.randomUUID().toString();
+    private static final String UUID_3 = UUID.randomUUID().toString();
+    private static final String UUID_4 = UUID.randomUUID().toString();
 
     private static final Resume RESUME_1 = ResumeTestData.create(UUID_1, "Name1");
     private static final Resume RESUME_2 = ResumeTestData.create(UUID_2, "Name2");
