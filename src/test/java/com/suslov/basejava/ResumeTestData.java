@@ -90,7 +90,7 @@ public class ResumeTestData {
         return elements;
     }
 
-    private static List<Experience> fillExperience() {
+    public static List<Experience> fillExperience() {
         List<Experience> elements = new ArrayList<>();
         elements.add(new Experience("", "RIT Center",
                 new Experience.Period("Java архитектор", DateUtil.of(2012, Month.APRIL),
@@ -142,7 +142,7 @@ public class ResumeTestData {
         return elements;
     }
 
-    private static List<Experience> fillEducation() {
+    public static List<Experience> fillEducation() {
         List<Experience> elements = new ArrayList<>();
         elements.add(new Experience("https://www.coursera.org/course/progfun", "Coursera",
                 new Experience.Period("", DateUtil.of(2013, Month.MARCH),
