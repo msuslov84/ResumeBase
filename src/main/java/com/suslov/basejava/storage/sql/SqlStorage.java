@@ -25,6 +25,12 @@ public class SqlStorage implements Storage {
     private final SqlHelper sqlHelper;
 
     public SqlStorage(String dbUrl, String dbUser, String dbPassword) {
+        // For excluding error in Tomcat "No suitable driver found for jdbc:postgresql://localhost:5432/postgres"
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         sqlHelper = new SqlHelper(dbUrl, dbUser, dbPassword);
     }
 
