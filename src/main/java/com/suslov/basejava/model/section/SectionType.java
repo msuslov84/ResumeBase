@@ -1,12 +1,12 @@
 package com.suslov.basejava.model.section;
 
 public enum SectionType {
-    OBJECTIVE("Позиция"),
-    PERSONAL("Личные качества"),
-    ACHIEVEMENT("Достижения"),
-    QUALIFICATIONS("Квалификация"),
-    EXPERIENCE("Опыт работы"),
-    EDUCATION("Образование");
+    OBJECTIVE("Position"),
+    PERSONAL("Personal qualities"),
+    ACHIEVEMENT("Achievements"),
+    QUALIFICATIONS("Qualification"),
+    EXPERIENCE("Experience"),
+    EDUCATION("Education");
 
     private final String title;
 

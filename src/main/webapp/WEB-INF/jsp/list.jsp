@@ -12,8 +12,8 @@
     <link rel="stylesheet" href="css/resume-list-styles.css">
     <title>List of all resumes</title>
 </head>
-<body>
 
+<body>
 <%-- Switch display themes --%>
 <div class="themes">
     <div class="theme-title">Theme</div>

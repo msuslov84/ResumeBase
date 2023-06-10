@@ -1,19 +1,19 @@
 package com.suslov.basejava.model;
 
 public enum ContactType {
-    TELEPHONE("Телефон") {
+    TELEPHONE("Telephone") {
         @Override
         protected String toHtmlNotNull(String value) {
             return getTitle() + ": " + value;
         }
     },
-    SKYPE("Скайп") {
+    SKYPE("Skype") {
         @Override
         public String toHtmlNotNull(String value) {
             return toLink("skype:" + value, value);
         }
     },
-    EMAIL("Эл. почта") {
+    EMAIL("Email") {
         @Override
         public String toHtmlNotNull(String value) {
             return toLink("mailto:" + value, value);
@@ -37,7 +37,7 @@ public enum ContactType {
             return toLink(value);
         }
     },
-    HOMEPAGE("Домашняя страница") {
+    HOMEPAGE("Home page") {
         @Override
         protected String toHtmlNotNull(String value) {
             return toLink(value);

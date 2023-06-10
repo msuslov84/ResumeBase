@@ -16,6 +16,7 @@
     <jsp:useBean id="resume" type="com.suslov.basejava.model.Resume" scope="request"/>
     <title>Resume: ${resume.fullName}</title>
 </head>
+
 <body>
 
 <jsp:include page="fragments/header.jsp"/>
