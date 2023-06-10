@@ -17,6 +17,8 @@ import java.util.UUID;
 public class Resume implements Comparable<Resume>, Serializable {
     public static final long serialVersionUID = 1L;
 
+    public static final Resume EMPTY = new Resume();
+
     private String uuid;
     private String fullName;
     private final Map<ContactType, String> contacts = new EnumMap<>(ContactType.class);
@@ -42,6 +44,10 @@ public class Resume implements Comparable<Resume>, Serializable {
 
     public String getFullName() {
         return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public Map<ContactType, String> getContacts() {

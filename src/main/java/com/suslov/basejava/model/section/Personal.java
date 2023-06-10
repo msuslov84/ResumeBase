@@ -5,6 +5,8 @@ import java.util.Objects;
 public class Personal extends AbstractSection {
     public static final long serialVersionUID = 1L;
 
+    public static final Personal EMPTY = new Personal("");
+
     private String content;
 
     public Personal() {

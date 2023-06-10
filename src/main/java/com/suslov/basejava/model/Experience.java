@@ -15,6 +15,8 @@ import static com.suslov.basejava.util.DateUtil.NOW;
 public class Experience implements Serializable {
     public static final long serialVersionUID = 1L;
 
+    public static final Experience EMPTY = new Experience("", "", Period.EMPTY);
+
     private Link homePage;
     private List<Period> periods = new ArrayList<>();
 
@@ -49,6 +51,8 @@ public class Experience implements Serializable {
     @XmlAccessorType(XmlAccessType.FIELD)
     public static class Period implements Serializable {
         public static final long serialVersionUID = 1L;
+
+        public static final Period EMPTY = new Period();
 
         private String title;
         @XmlJavaTypeAdapter(LocalDateXmlAdapter.class)
