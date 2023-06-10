@@ -91,7 +91,7 @@ public class DataSerializer implements Serializer {
     }
 
     private void readResumeContacts(DataInputStream dis, Resume resume) throws IOException {
-        readToCollection(dis, () -> resume.addContact(ContactType.valueOf(dis.readUTF()), dis.readUTF()));
+        readToCollection(dis, () -> resume.setContact(ContactType.valueOf(dis.readUTF()), dis.readUTF()));
     }
 
     private void readResumeSections(DataInputStream dis, Resume resume) throws IOException {
@@ -100,13 +100,13 @@ public class DataSerializer implements Serializer {
             switch (sectionType) {
                 case OBJECTIVE:
                 case PERSONAL:
-                    resume.addSection(sectionType, new Personal(dis.readUTF()));
+                    resume.setSection(sectionType, new Personal(dis.readUTF()));
                     break;
                 case ACHIEVEMENT:
                 case QUALIFICATIONS:
                     SkillList skillList = new SkillList();
                     readToCollection(dis, () -> skillList.addSkill(dis.readUTF()));
-                    resume.addSection(sectionType, skillList);
+                    resume.setSection(sectionType, skillList);
                     break;
                 case EXPERIENCE:
                 case EDUCATION:
@@ -118,7 +118,7 @@ public class DataSerializer implements Serializer {
                                 convertToLocalDate(dis.readUTF()), convertToLocalDate(dis.readUTF()), dis.readUTF())));
                         list.add(experience);
                     });
-                    resume.addSection(sectionType, new ExperienceList(list));
+                    resume.setSection(sectionType, new ExperienceList(list));
             }
         });
     }

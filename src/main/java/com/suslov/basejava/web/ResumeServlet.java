@@ -48,17 +48,18 @@ public class ResumeServlet extends HttpServlet {
                 break;
             case "edit":
                 resume = storage.get(uuid);
-                getSectionsWithEmptyFields(resume, SectionType.EXPERIENCE);
-                getSectionsWithEmptyFields(resume, SectionType.EDUCATION);
+                // Refill sections with empty fields for entering new data on edit form
+                getSectionWithEmptyField(resume, SectionType.EXPERIENCE);
+                getSectionWithEmptyField(resume, SectionType.EDUCATION);
                 sections = resume.getSections();
                 break;
             case "create":
                 resume = Resume.EMPTY;
-                resume.addSection(SectionType.OBJECTIVE, Personal.EMPTY);
+                resume.setSection(SectionType.OBJECTIVE, Personal.EMPTY);
                 sections = resume.getSections();
                 break;
             default:
-                throw new WebServletException("Action " + action + " is illegal");
+                throw new WebServletException("Error: entered action '" + action + "' is illegal");
         }
         request.setAttribute("resume", resume);
         request.setAttribute("sections", sections);
@@ -92,7 +93,7 @@ public class ResumeServlet extends HttpServlet {
         for (ContactType type : ContactType.values()) {
             String value = request.getParameter(type.name());
             if (!HtmlUtil.isEmpty(value)) {
-                r.addContact(type, value);
+                r.setContact(type, value);
             } else {
                 r.getContacts().remove(type);
             }
@@ -106,11 +107,11 @@ public class ResumeServlet extends HttpServlet {
                 switch (type) {
                     case PERSONAL:
                     case OBJECTIVE:
-                        r.addSection(type, new Personal(value.trim()));
+                        r.setSection(type, new Personal(value.trim()));
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        r.addSection(type, new SkillList(Arrays.stream(value.split("\n")).filter(x -> !x.trim().isEmpty()).collect(Collectors.toList())));
+                        r.setSection(type, new SkillList(Arrays.stream(value.split("\n")).filter(x -> !x.trim().isEmpty()).collect(Collectors.toList())));
                         break;
                     case EDUCATION:
                     case EXPERIENCE:
@@ -139,7 +140,7 @@ public class ResumeServlet extends HttpServlet {
                                 experiences.add(new Experience(urls[i], nameOrg, periods));
                             }
                         }
-                        r.addSection(type, new ExperienceList(experiences));
+                        r.setSection(type, new ExperienceList(experiences));
                         break;
                 }
             } else {
@@ -161,20 +162,19 @@ public class ResumeServlet extends HttpServlet {
         return (theme == null || !themes.contains(theme)) ? WebTheme.LIGHT.getName() : theme;
     }
 
-    private void getSectionsWithEmptyFields(Resume resume, SectionType type) {
+    private void getSectionWithEmptyField(Resume resume, SectionType type) {
         ExperienceList section = (ExperienceList) resume.getSection(type);
-        List<Experience> experienceListWithEmpty = new ArrayList<>();
-        experienceListWithEmpty.add(Experience.EMPTY);
+        List<Experience> experiencesWithEmpty = new ArrayList<>();
+        experiencesWithEmpty.add(Experience.EMPTY);
 
         if (section != null) {
             for (Experience exp : section.getExperiences()) {
-                List<Experience.Period> periodListWithEmpty = new ArrayList<>();
-                periodListWithEmpty.add(Experience.Period.EMPTY);
-                periodListWithEmpty.addAll(exp.getPeriods());
-                experienceListWithEmpty.add(new Experience(exp.getHomePage().getUrl(), exp.getHomePage().getName(), periodListWithEmpty));
+                List<Experience.Period> periodsWithEmpty = new ArrayList<>();
+                periodsWithEmpty.add(Experience.Period.EMPTY);
+                periodsWithEmpty.addAll(exp.getPeriods());
+                experiencesWithEmpty.add(new Experience(exp.getHomePage().getUrl(), exp.getHomePage().getName(), periodsWithEmpty));
             }
         }
-
-        resume.addSection(type, new ExperienceList(experienceListWithEmpty));
+        resume.setSection(type, new ExperienceList(experiencesWithEmpty));
     }
 }

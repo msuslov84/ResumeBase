@@ -19,19 +19,19 @@ public class ResumeTestData {
     public static void main(String[] args) {
         Resume testResume = new Resume("Григорий Кислин");
 
-        testResume.addContact(ContactType.SKYPE, "grigory.kislin");
-        testResume.addContact(ContactType.EMAIL, "gkislin@yandex.ru");
-        testResume.addContact(ContactType.LINKEDIN, "https://www.linkedin.com/in/gkislin");
-        testResume.addContact(ContactType.GITHUB, "https://github.com/gkislin");
-        testResume.addContact(ContactType.STACKOVERFLOW, "https://stackoverflow.com/users/548473/grigory-kislin");
-        testResume.addContact(ContactType.HOMEPAGE, "http://gkislin.ru/");
+        testResume.setContact(ContactType.SKYPE, "grigory.kislin");
+        testResume.setContact(ContactType.EMAIL, "gkislin@yandex.ru");
+        testResume.setContact(ContactType.LINKEDIN, "https://www.linkedin.com/in/gkislin");
+        testResume.setContact(ContactType.GITHUB, "https://github.com/gkislin");
+        testResume.setContact(ContactType.STACKOVERFLOW, "https://stackoverflow.com/users/548473/grigory-kislin");
+        testResume.setContact(ContactType.HOMEPAGE, "http://gkislin.ru/");
 
-        testResume.addSection(SectionType.OBJECTIVE, new Personal("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям"));
-        testResume.addSection(SectionType.PERSONAL, new Personal("Аналитический склад ума, сильная логика, креативность, инициативность. Пурист кода и архитектуры."));
-        testResume.addSection(SectionType.ACHIEVEMENT, new SkillList(fillAchievements()));
-        testResume.addSection(SectionType.QUALIFICATIONS, new SkillList(fillQualifications()));
-        testResume.addSection(SectionType.EXPERIENCE, new ExperienceList(fillExperience()));
-        testResume.addSection(SectionType.EDUCATION, new ExperienceList(fillEducation()));
+        testResume.setSection(SectionType.OBJECTIVE, new Personal("Ведущий стажировок и корпоративного обучения по Java Web и Enterprise технологиям"));
+        testResume.setSection(SectionType.PERSONAL, new Personal("Аналитический склад ума, сильная логика, креативность, инициативность. Пурист кода и архитектуры."));
+        testResume.setSection(SectionType.ACHIEVEMENT, new SkillList(fillAchievements()));
+        testResume.setSection(SectionType.QUALIFICATIONS, new SkillList(fillQualifications()));
+        testResume.setSection(SectionType.EXPERIENCE, new ExperienceList(fillExperience()));
+        testResume.setSection(SectionType.EDUCATION, new ExperienceList(fillEducation()));
 
         for (ContactType type : ContactType.values()) {
             System.out.println(type.getTitle());
@@ -174,21 +174,21 @@ public class ResumeTestData {
 
     public static Resume create(String uuid, String fullName) {
         Resume newResume = new Resume(uuid, fullName);
-        newResume.addContact(ContactType.TELEPHONE, "+7(999) 111-" + (int) (Math.random() * 10000));
-        newResume.addContact(ContactType.EMAIL, "mmm" + (int) (Math.random() * 100) + "@mail.ru");
+        newResume.setContact(ContactType.TELEPHONE, "+7(999) 111-" + (int) (Math.random() * 10000));
+        newResume.setContact(ContactType.EMAIL, "mmm" + (int) (Math.random() * 100) + "@mail.ru");
 
-        newResume.addSection(SectionType.OBJECTIVE, new Personal("Должность такая-то"));
-        newResume.addSection(SectionType.PERSONAL, new Personal("Личные качества такие-то"));
+        newResume.setSection(SectionType.OBJECTIVE, new Personal("Должность такая-то"));
+        newResume.setSection(SectionType.PERSONAL, new Personal("Личные качества такие-то"));
 
         List<String> strList = new ArrayList<>();
         strList.add("Делал то.");
         strList.add("Делал сё.");
-        newResume.addSection(SectionType.ACHIEVEMENT, new SkillList(strList));
+        newResume.setSection(SectionType.ACHIEVEMENT, new SkillList(strList));
 
         strList.clear();
         strList.add("Умею то.");
         strList.add("Умею сё.");
-        newResume.addSection(SectionType.QUALIFICATIONS, new SkillList(strList));
+        newResume.setSection(SectionType.QUALIFICATIONS, new SkillList(strList));
 
         List<Experience> expList = new ArrayList<>();
         expList.add(new Experience("", "IBM",
@@ -201,7 +201,7 @@ public class ResumeTestData {
                         "Lead Programmer for C#"), new Experience.Period("Team Lead", DateUtil.of(2022, Month.JANUARY),
                 LocalDate.now(),
                 "Team Lead for C# programmers")));
-        newResume.addSection(SectionType.EXPERIENCE, new ExperienceList(expList));
+        newResume.setSection(SectionType.EXPERIENCE, new ExperienceList(expList));
 
         expList.clear();
         expList.add(new Experience("", "Stepik",
@@ -212,7 +212,7 @@ public class ResumeTestData {
                 new Experience.Period("student", DateUtil.of(2019, Month.SEPTEMBER),
                         DateUtil.of(2020, Month.FEBRUARY),
                         "Java course")));
-        newResume.addSection(SectionType.EDUCATION, new ExperienceList(expList));
+        newResume.setSection(SectionType.EDUCATION, new ExperienceList(expList));
 
         return newResume;
     }
