@@ -20,10 +20,10 @@ body {
 .header .resumes-control-title {
     margin-left: 16px;
 
-    font-family: Open Sans, serif;
+    font-family: Arial, serif;
     font-style: normal;
     font-weight: 600;
-    font-size: 20px;
+    font-size: 25px;
 
     color: var(--header-text-color);
 }
@@ -51,10 +51,10 @@ body {
     position:absolute;
     bottom:0;
 
-    font-family: Open Sans, serif;
+    font-family: Arial, serif;
     font-style: normal;
     font-weight: normal;
-    font-size: 14px;
+    font-size: 15px;
     line-height: 19px;
 
     display: table;
@@ -109,7 +109,7 @@ body {
 }
 
 .themes {
-    font-family: Roboto, serif;
+    font-family: Arial, serif;
     font-style: normal;
     font-weight: bold;
     font-size: 16px;
@@ -123,7 +123,7 @@ body {
 }
 
 .theme-title {
-    width: 55px;
+    width: 60px;
 }
 
 .theme-selector option {

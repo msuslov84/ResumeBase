@@ -22,6 +22,7 @@ public class StorageConfig {
             props.load(in);
             storageDir = new File(props.getProperty("storage.dir"));
             storage = new SqlStorage(props.getProperty("db.url"), props.getProperty("db.user"), props.getProperty("db.password"));
+//            storage = new ListStorage();
         } catch (IOException e) {
             throw new StorageException("Error reading storage configuration file '" + PROPERTIES_FILE + "'");
         }

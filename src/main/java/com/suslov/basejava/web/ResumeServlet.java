@@ -36,7 +36,7 @@ public class ResumeServlet extends HttpServlet {
         }
 
         Resume resume;
-        Map<SectionType, AbstractSection> sections;
+//        Map<SectionType, AbstractSection> sections;
         switch (action) {
             case "delete":
                 storage.delete(uuid);
@@ -44,25 +44,41 @@ public class ResumeServlet extends HttpServlet {
                 return;
             case "view":
                 resume = storage.get(uuid);
-                sections = resume.getSections();
+//                sections = resume.getSections();
                 break;
             case "edit":
                 resume = storage.get(uuid);
                 // Refill sections with empty fields for entering new data on edit form
-                getSectionWithEmptyField(resume, SectionType.EXPERIENCE);
-                getSectionWithEmptyField(resume, SectionType.EDUCATION);
-                sections = resume.getSections();
+                for (SectionType type : SectionType.values()) {
+                    AbstractSection section = resume.getSection(type);
+                    switch (type) {
+                        case OBJECTIVE:
+                        case PERSONAL:
+                            section = getNotNullPersonalInformation(section);
+                            break;
+                        case ACHIEVEMENT:
+                        case QUALIFICATIONS:
+                            section = getNotNullSkills(section);
+                            break;
+                        case EXPERIENCE:
+                        case EDUCATION:
+                            section = getExperienceWithEmptyField((ExperienceList) section);
+                            break;
+                    }
+                    resume.setSection(type, section);
+                }
+//                sections = resume.getSections();
                 break;
             case "create":
                 resume = Resume.EMPTY;
                 resume.setSection(SectionType.OBJECTIVE, Personal.EMPTY);
-                sections = resume.getSections();
+//                sections = resume.getSections();
                 break;
             default:
                 throw new WebServletException("Error: entered action '" + action + "' is illegal");
         }
         request.setAttribute("resume", resume);
-        request.setAttribute("sections", sections);
+//        request.setAttribute("sections", sections);
         String nextPage = "view".equals(action) ? "/WEB-INF/jsp/view.jsp" : "/WEB-INF/jsp/edit.jsp";
         request.getRequestDispatcher(nextPage).forward(request, response);
     }
@@ -103,7 +119,9 @@ public class ResumeServlet extends HttpServlet {
             String typeName = type.name();
             String value = request.getParameter(typeName);
             String[] values = request.getParameterValues(typeName);
-            if (!(HtmlUtil.isEmpty(value) && values.length < 2)) {
+            if (HtmlUtil.isEmpty(value) && values.length < 2) {
+                r.getSections().remove(type);
+            } else {
                 switch (type) {
                     case PERSONAL:
                     case OBJECTIVE:
@@ -111,18 +129,19 @@ public class ResumeServlet extends HttpServlet {
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        r.setSection(type, new SkillList(Arrays.stream(value.split("\n")).filter(x -> !x.trim().isEmpty()).collect(Collectors.toList())));
+                        r.setSection(type, new SkillList(Arrays.stream(value.split("\n"))
+                                .filter(x -> !x.trim().isEmpty())
+                                .collect(Collectors.toList())));
                         break;
                     case EDUCATION:
                     case EXPERIENCE:
-                        String[] organizations = request.getParameterValues(typeName);
                         String[] urls = request.getParameterValues(typeName + "url");
 
                         List<Experience> experiences = new ArrayList<>();
 
-                        for (int i = 0; i < organizations.length; i++) {
-                            String nameOrg = organizations[i];
-                            String periodMark = typeName + "_" + i + "_";
+                        for (int i = 0; i < values.length; i++) {
+                            String nameOrg = values[i];
+                            String periodMark = typeName + i;
                             if (!HtmlUtil.isEmpty(nameOrg)) {
                                 List<Experience.Period> periods = new ArrayList<>();
 
@@ -134,7 +153,8 @@ public class ResumeServlet extends HttpServlet {
                                 for (int j = 0; j < titles.length; j++) {
                                     String namePeriod = titles[j];
                                     if (!HtmlUtil.isEmpty(namePeriod)) {
-                                        periods.add(new Experience.Period(namePeriod, DateUtil.parse(periodsFrom[j]), DateUtil.parse(periodsTo[j]), descriptions[j]));
+                                        periods.add(new Experience.Period(namePeriod, DateUtil.parse(periodsFrom[j]),
+                                                DateUtil.parse(periodsTo[j]), descriptions[j]));
                                     }
                                 }
                                 experiences.add(new Experience(urls[i], nameOrg, periods));
@@ -143,8 +163,6 @@ public class ResumeServlet extends HttpServlet {
                         r.setSection(type, new ExperienceList(experiences));
                         break;
                 }
-            } else {
-                r.getSections().remove(type);
             }
         }
 
@@ -162,11 +180,24 @@ public class ResumeServlet extends HttpServlet {
         return (theme == null || !themes.contains(theme)) ? WebTheme.LIGHT.getName() : theme;
     }
 
-    private void getSectionWithEmptyField(Resume resume, SectionType type) {
-        ExperienceList section = (ExperienceList) resume.getSection(type);
+
+    private AbstractSection getNotNullPersonalInformation(AbstractSection section) {
+        if (section == null) {
+            section = Personal.EMPTY;
+        }
+        return section;
+    }
+
+    private AbstractSection getNotNullSkills(AbstractSection section) {
+        if (section == null) {
+            section = SkillList.EMPTY;
+        }
+        return section;
+    }
+
+    private AbstractSection getExperienceWithEmptyField(ExperienceList section) {
         List<Experience> experiencesWithEmpty = new ArrayList<>();
         experiencesWithEmpty.add(Experience.EMPTY);
-
         if (section != null) {
             for (Experience exp : section.getExperiences()) {
                 List<Experience.Period> periodsWithEmpty = new ArrayList<>();
@@ -175,6 +206,6 @@ public class ResumeServlet extends HttpServlet {
                 experiencesWithEmpty.add(new Experience(exp.getHomePage().getUrl(), exp.getHomePage().getName(), periodsWithEmpty));
             }
         }
-        resume.setSection(type, new ExperienceList(experiencesWithEmpty));
+        return new ExperienceList(experiencesWithEmpty);
     }
 }

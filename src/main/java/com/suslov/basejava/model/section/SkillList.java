@@ -5,6 +5,8 @@ import java.util.*;
 public class SkillList extends AbstractSection {
     public static final long serialVersionUID = 1L;
 
+    public static final SkillList EMPTY = new SkillList("");
+
     private List<String> skills = new ArrayList<>();
 
     public SkillList() {

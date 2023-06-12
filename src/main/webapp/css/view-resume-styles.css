@@ -1,5 +1,5 @@
 .form-wrapper {
-    font-family: Open Sans, serif;
+    font-family: Arial, serif;
     font-style: normal;
     font-weight: 600;
     color: var(--text-color);
@@ -45,11 +45,11 @@
     margin: 40px 0 24px 0;
 }
 
-.position {
-    font-weight: 600;
-    font-size: 18px;
-    line-height: 25px;
-}
+/*.position {*/
+/*    font-weight: 600;*/
+/*    font-size: 16px;*/
+/*    line-height: 25px;*/
+/*}*/
 
 .qualities {
     font-weight: 300;
@@ -59,13 +59,13 @@
 
 .list {
     font-weight: 300;
-    font-size: 18px;
+    font-size: 16px;
     line-height: 25px;
 }
 
 .job-name {
     font-weight: bold;
-    font-size: 22px;
+    font-size: 18px;
     line-height: 30px;
     margin-left: 207px;
 }
@@ -77,20 +77,27 @@
 
 .period {
     font-weight: 300;
-    font-size: 18px;
+    font-size: 16px;
     line-height: 25px;
     min-width: 207px;
 }
 
+.personal-position {
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 25px;
+    margin: 30px;
+}
+
 .position {
     font-weight: bold;
-    font-size: 18px;
+    font-size: 16px;
     line-height: 25px;
 }
 
 .description {
     font-weight: 300;
-    font-size: 18px;
+    font-size: 16px;
     line-height: 25px;
     margin: 35px 0 0 207px;
 }

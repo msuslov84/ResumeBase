@@ -22,7 +22,7 @@ table {
 }
 
 .add-resume-title {
-    font-family: Roboto, serif;
+    font-family: Arial, serif;
     font-style: normal;
     font-weight: bold;
     font-size: 15px;
@@ -43,7 +43,7 @@ table {
 }
 
 .t-header, tr {
-    font-family: Roboto, serif;
+    font-family: Arial, serif;
     font-style: normal;
     font-weight: bold;
     font-size: 16px;
@@ -56,7 +56,7 @@ table {
 }
 
 .t-body, tr {
-    font-family: Open Sans, serif;
+    font-family: Arial, serif;
     font-style: normal;
     font-weight: normal;
     font-size: 14px;

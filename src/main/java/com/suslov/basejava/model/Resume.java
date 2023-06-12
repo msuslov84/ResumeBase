@@ -1,7 +1,6 @@
 package com.suslov.basejava.model;
 
-import com.suslov.basejava.model.section.AbstractSection;
-import com.suslov.basejava.model.section.SectionType;
+import com.suslov.basejava.model.section.*;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -18,6 +17,15 @@ public class Resume implements Comparable<Resume>, Serializable {
     public static final long serialVersionUID = 1L;
 
     public static final Resume EMPTY = new Resume();
+
+    static {
+        EMPTY.setSection(SectionType.OBJECTIVE, Personal.EMPTY);
+        EMPTY.setSection(SectionType.PERSONAL, Personal.EMPTY);
+        EMPTY.setSection(SectionType.ACHIEVEMENT, SkillList.EMPTY);
+        EMPTY.setSection(SectionType.QUALIFICATIONS, SkillList.EMPTY);
+        EMPTY.setSection(SectionType.EXPERIENCE, new ExperienceList(Experience.EMPTY));
+        EMPTY.setSection(SectionType.EDUCATION, new ExperienceList(Experience.EMPTY));
+    }
 
     private String uuid;
     private String fullName;

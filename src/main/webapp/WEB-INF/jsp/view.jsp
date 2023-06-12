@@ -53,7 +53,7 @@
             </div>
             <c:choose>
                 <c:when test="${type=='OBJECTIVE' || type=='PERSONAL'}">
-                    <div class="position">
+                    <div class="personal-position">
                         <%=((Personal) section).getContent()%>
                     </div>
                 </c:when>

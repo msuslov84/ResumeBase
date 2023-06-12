@@ -75,37 +75,37 @@
                             </c:choose>
 
                             <label>
-                                <input class="field" type="text" placeholder="Name" name='${type}' size=100
+                                <input class="${exp.index == 0 ? "new-field" : "field"}" type="text" placeholder="Name" name='${type}' size=100
                                        value="${experience.homePage.name}">
                             </label>
                             <label>
-                                <input class="field" type="text" placeholder="Link" name='${type}url' size=100
+                                <input class="${exp.index == 0 ? "new-field" : "field"}" type="text" placeholder="Link" name='${type}url' size=100
                                        value="${experience.homePage.url}">
                             </label>
 
-                            <c:forEach var="period" items="${experience.periods}">
+                            <c:forEach var="period" items="${experience.periods}" varStatus="per">
                                 <jsp:useBean id="period" type="com.suslov.basejava.model.Experience.Period"/>
                                 <div class="date-section">
                                     <label>
-                                        <input class="field date" name="${type}${exp.index}startDate"
+                                        <input class="${per.index == 0 ? "new-field" : "field"} date" name="${type}${exp.index}periodFrom"
                                                placeholder="From, MM.yyyy"
                                                size=10
                                                value="<%=DateUtil.format(period.getPeriodFrom())%>">
                                     </label>
                                     <label>
-                                        <input class="field date date-margin" name="${type}${exp.index}endDate"
+                                        <input class="${per.index == 0 ? "new-field" : "field"} date date-margin" name="${type}${exp.index}periodTo"
                                                placeholder="To, MM.yyyy"
                                                size=10
                                                value="<%=DateUtil.format(period.getPeriodTo())%>">
                                     </label>
                                 </div>
                                 <label>
-                                    <input class="field" type="text" placeholder="Title"
+                                    <input class="${per.index == 0 ? "new-field" : "field"}" type="text" placeholder="Title"
                                            name='${type}${exp.index}title' size=75
                                            value="${period.title}">
                                 </label>
                                 <label>
-                                    <textarea class="field" placeholder="Description"
+                                    <textarea class="${per.index == 0 ? "new-field" : "field"}" placeholder="Description"
                                               name="${type}${exp.index}description">${period.description}</textarea>
                                 </label>
                             </c:forEach>

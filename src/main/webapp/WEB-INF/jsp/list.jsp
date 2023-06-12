@@ -21,8 +21,8 @@
         <form action="" method="GET">
             <label>
                 <select name="theme" onchange="this.form.submit()">
-                    <option value="light" ${theme == null || theme.equals("LIGHT") ? "selected" : ""}>Light</option>
-                    <option value="dark" ${theme.equals("DARK") ? "selected" : ""}>Dark</option>
+                    <option value="light" ${theme == null || theme.equals("light") ? "selected" : ""}>Light</option>
+                    <option value="dark" ${theme.equals("dark") ? "selected" : ""}>Dark</option>
                 </select>
             </label>
         </form>
@@ -34,20 +34,20 @@
 <div class="scrollable-panel">
     <div class="table-wrapper">
         <div class="add-resume">
-            <a class="no-underline-anchor" href="resume?action=add&theme=${theme}">
+            <a class="no-underline-anchor" href="resume?action=create&theme=${theme}">
                 <img src="img/add.png" alt="">
             </a>
-            <a class="text-anchor" href="resume?action=add&theme=${theme}">
-                <p class="add-resume-title">Добавить резюме</p>
+            <a class="text-anchor" href="resume?action=create&theme=${theme}">
+                <p class="add-resume-title">Add resume</p>
             </a>
         </div>
         <div class="resumes-list">
             <table>
                 <tr class="t-header">
-                    <th class="name-column">Имя</th>
-                    <th class="info-column">Контакты</th>
-                    <th class="img-column">Редактировать</th>
-                    <th class="img-column">Удалить</th>
+                    <th class="name-column">Full name</th>
+                    <th class="info-column">Contacts</th>
+                    <th class="img-column">Edit</th>
+                    <th class="img-column">Delete</th>
                 </tr>
                 <c:forEach items="${requestScope.resumes}" var="resume">
                     <jsp:useBean id="resume" type="com.suslov.basejava.model.Resume"/>
