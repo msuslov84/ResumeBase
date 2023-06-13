@@ -6,8 +6,4 @@ public class NotExistStorageException extends StorageException {
     public NotExistStorageException(String uuid) {
         super("Error: resume [" + uuid + "] not exists", uuid);
     }
-
-    public NotExistStorageException(String uuid, Exception e) {
-        super("Error: resume [" + uuid + "] not exists", uuid, e);
-    }
 }

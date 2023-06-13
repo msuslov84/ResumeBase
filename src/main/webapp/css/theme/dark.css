@@ -1,5 +1,4 @@
 :root {
-    /*--header-background: #2A343D;*/
     --header-background: #222029;
     --header-text-color: #F8F9FA;
     --header-arrow-background: #FFFFFF;
@@ -7,16 +6,12 @@
     --footer-anchor-color: #F8F9FA;
     --anchor-color: #F8F9FA;
     --text-color: #ECEEF2;
-    /*--add-resume-text-color: #3F9752;*/
     --add-resume-text-color: #F8F9FA;
-    /*--body-background: #1A2026;*/
     --body-background: #3C3B3F;
     --table-header-text-color: #F8F9FA;
     --table-header-background: #0A0C0F;
     --table-text-color: #F8F9FA;
-    /*--table-odd-row-background: #12161A;*/
     --table-odd-row-background: #4A494F;
-    /*--table-even-row-background: #1A2026;*/
     --table-even-row-background: #6A173;
     --table-shadow-color: rgba(0, 0, 0, 0.5);
     --input-field-background: #2A343D;

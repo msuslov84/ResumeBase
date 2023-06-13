@@ -1,7 +1,6 @@
 package com.suslov.basejava.util.parser;
 
-import com.suslov.basejava.exception.SerializeException;
-import com.suslov.basejava.exception.StorageException;
+import com.suslov.basejava.exception.ParseException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -24,7 +23,7 @@ public class XMLParser {
 
             unmarshaller = context.createUnmarshaller();
         } catch (JAXBException exp) {
-            throw new SerializeException("Error initializing XML parser", exp);
+            throw new ParseException("Error initializing XML parser", exp);
         }
     }
 
@@ -32,7 +31,7 @@ public class XMLParser {
         try {
             return (T) unmarshaller.unmarshal(reader);
         } catch (JAXBException exp) {
-            throw new SerializeException("Error XML unmarshalling from reader to object", exp);
+            throw new ParseException("Error XML unmarshalling from reader to object", exp);
         }
     }
 
@@ -40,7 +39,7 @@ public class XMLParser {
         try {
             marshaller.marshal(instance, writer);
         } catch (JAXBException exp) {
-            throw new SerializeException("Error XML marshalling object to writer", exp);
+            throw new ParseException("Error XML marshalling object to writer", exp);
         }
     }
 }

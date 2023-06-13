@@ -8,8 +8,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 public class StorageConfig {
+    private static final Logger LOG = Logger.getLogger(StorageConfig.class.getName());
+
     public static final String PROPERTIES_FILE = "/config.properties";
     private static final StorageConfig INSTANCE = new StorageConfig();
 
@@ -22,9 +25,10 @@ public class StorageConfig {
             props.load(in);
             storageDir = new File(props.getProperty("storage.dir"));
             storage = new SqlStorage(props.getProperty("db.url"), props.getProperty("db.user"), props.getProperty("db.password"));
-//            storage = new ListStorage();
         } catch (IOException e) {
-            throw new StorageException("Error reading storage configuration file '" + PROPERTIES_FILE + "'");
+            String errorMessage = "Error reading storage configuration file '" + PROPERTIES_FILE + "'";
+            LOG.warning(errorMessage);
+            throw new StorageException(errorMessage);
         }
     }
 

@@ -13,8 +13,8 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link rel="stylesheet" href="css/theme/${theme}.css">
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/edit-resume-styles.css">
+    <link rel="stylesheet" href="css/common-styles.css">
+    <link rel="stylesheet" href="css/edit-page-styles.css">
     <jsp:useBean id="resume" type="com.suslov.basejava.model.Resume" scope="request"/>
     <title>Edit resume: ${resume.fullName}</title>
 </head>
@@ -109,6 +109,7 @@
                                               name="${type}${exp.index}description">${period.description}</textarea>
                                 </label>
                             </c:forEach>
+
                         </c:forEach>
                     </c:when>
                 </c:choose>

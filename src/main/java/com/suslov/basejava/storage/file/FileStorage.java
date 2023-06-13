@@ -1,5 +1,6 @@
 package com.suslov.basejava.storage.file;
 
+import com.suslov.basejava.exception.SerializeException;
 import com.suslov.basejava.exception.StorageException;
 import com.suslov.basejava.model.Resume;
 import com.suslov.basejava.storage.AbstractStorage;
@@ -9,19 +10,21 @@ import java.io.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class FileStorage extends AbstractStorage<File> {
+    private static final Logger LOG = Logger.getLogger(FileStorage.class.getName());
+
     private final File directory;
     private final Serializer serializer;
 
     public FileStorage(File directory, Serializer serializer) {
-        Objects.requireNonNull(directory, "Directory must not be null");
-        if (!directory.isDirectory()) {
-            throw new StorageException(directory.getAbsolutePath() + " is not directory");
-        }
-        if (!(directory.canRead() && directory.canWrite())) {
-            throw new StorageException(directory.getAbsolutePath() + " is not readable/writable");
+        Objects.requireNonNull(directory, "Error: the file directory must not be null");
+        if (!directory.isDirectory() || !directory.canRead() || !directory.canWrite()) {
+            String errorMessage = "File storage '" + directory.getAbsolutePath() + "' is not a directory or is not readable/writable";
+            LOG.warning(errorMessage);
+            throw new StorageException(errorMessage);
         }
         this.directory = directory;
         this.serializer = serializer;
@@ -42,16 +45,18 @@ public class FileStorage extends AbstractStorage<File> {
     @Override
     protected void addResumeInStorage(File file, Resume resume) {
         boolean fileCreated;
-        String errorText = "Error creating file '" + file.getAbsolutePath() + "'";
+        String errorMessage = "Error creating file '" + file.getAbsolutePath() + "' for resume " + resume;
         try {
             fileCreated = file.createNewFile();
         } catch (IOException exp) {
-            throw new StorageException(errorText, file.getName(), exp);
+            LOG.warning(errorMessage);
+            throw new StorageException(errorMessage, file.getName(), exp);
         }
         if (fileCreated) {
             updateResumeInStorage(file, resume);
         } else {
-            throw new StorageException(errorText, file.getName());
+            LOG.warning(errorMessage);
+            throw new StorageException(errorMessage, file.getName());
         }
     }
 
@@ -59,8 +64,10 @@ public class FileStorage extends AbstractStorage<File> {
     protected Resume getResumeFromStorage(File file) {
         try {
             return serializer.readFromFile(new BufferedInputStream(new FileInputStream(file)));
-        } catch (IOException exp) {
-            throw new StorageException("Error deserializing resume from file '" + file.getAbsolutePath() + "'", exp);
+        } catch (SerializeException | IOException exp) {
+            String errorMessage = "Error getting resume from the file storage by path '" + file.getAbsolutePath() + "'";
+            LOG.warning(errorMessage);
+            throw new StorageException(errorMessage, exp);
         }
     }
 
@@ -68,27 +75,25 @@ public class FileStorage extends AbstractStorage<File> {
     protected void updateResumeInStorage(File file, Resume resume) {
         try {
             serializer.writeToFile(resume, new BufferedOutputStream(new FileOutputStream(file)));
-        } catch (IOException exp) {
-            throw new StorageException("Error serializing resume to file '" + file.getAbsolutePath() + "'",
-                    resume.getUuid(), exp);
+        } catch (SerializeException | IOException exp) {
+            String errorMessage = "Error updating resume " + resume + " in the file storage by path '" + file.getAbsolutePath() + "'";
+            LOG.warning(errorMessage);
+            throw new StorageException(errorMessage, resume.getUuid(), exp);
         }
     }
 
     @Override
     protected void deleteResumeInStorage(File file) {
         if (!file.delete()) {
-            throw new StorageException("Error deleting resume in file '" + file.getAbsolutePath() + "'", file.getName());
+            String errorMessage = "Error deleting resume in the file storage by path '" + file.getAbsolutePath() + "'";
+            LOG.warning(errorMessage);
+            throw new StorageException(errorMessage, file.getName());
         }
     }
 
     @Override
     protected List<Resume> getAllResumes() {
         return Arrays.stream(getStorageFiles()).map(this::getResumeFromStorage).collect(Collectors.toList());
-//        ArrayList<Resume> list = new ArrayList<>();
-//        for (File file : getStorageFiles()) {
-//            list.add(getResumeFromStorage(file));
-//        }
-//        return list;
     }
 
     @Override
@@ -104,7 +109,9 @@ public class FileStorage extends AbstractStorage<File> {
     private File[] getStorageFiles() {
         File[] files = directory.listFiles();
         if (files == null) {
-            throw new StorageException("Invalid path directory", directory.getName());
+            String errorMessage = "Invalid path directory of the file storage - '" + directory.getAbsolutePath() + "'";
+            LOG.warning(errorMessage);
+            throw new StorageException(errorMessage);
         }
         return files;
     }

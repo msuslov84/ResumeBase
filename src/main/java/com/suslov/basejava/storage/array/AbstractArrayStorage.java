@@ -6,8 +6,11 @@ import com.suslov.basejava.storage.AbstractStorage;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Logger;
 
 public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
+    private static final Logger LOG = Logger.getLogger(AbstractArrayStorage.class.getName());
+
     protected static final int STORAGE_LIMIT = 10000;
     protected final Resume[] storage = new Resume[STORAGE_LIMIT];
     protected int size;
@@ -16,7 +19,7 @@ public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
 
     @Override
     public void clear() {
-        // Присваиваем всем элементам хранилища с резюме null, обнуляем счетчик резюме
+        LOG.info("Clear resume storage. Deleted " + size + " resumes");
         Arrays.fill(storage, 0, size, null);
         size = 0;
     }
@@ -29,7 +32,10 @@ public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
     @Override
     protected void addResumeInStorage(Integer index, Resume resume) {
         if (size == STORAGE_LIMIT) {
-            throw new StorageException("Storage overflow", resume.getUuid());
+            String uuid = resume.getUuid();
+            LOG.warning("Storage size in " + size + " elements is full. Resume by UUID '" + uuid + "' cannot " +
+                    "be placed in it");
+            throw new StorageException("Storage overflow. Limit in " + size + " elements exhausted", uuid);
         }
         insertResume(resume, index);
         size++;
@@ -49,9 +55,8 @@ public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
     protected void deleteResumeInStorage(Integer index) {
         storage[index] = null;
         if (size - (index + 1) >= 0) {
-            // Если резюме было найдено и удалено, смещаем все последующие резюме хранилища влево
+            // Shift all subsequent repository resumes to the left and clear last one
             System.arraycopy(storage, index + 1, storage, index, size - (index + 1));
-            // Очищаем последнее резюме хранилища после его смещения влево
             storage[size - 1] = null;
         }
         size--;

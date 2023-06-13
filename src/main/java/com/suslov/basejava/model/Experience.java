@@ -23,13 +23,13 @@ public class Experience implements Serializable {
     public Experience() {
     }
 
+    public Experience(String homePage, String title, Period... periods) {
+        this(homePage, title, Arrays.asList(periods));
+    }
+
     public Experience(String homePage, String title, List<Period> periods) {
         this.homePage = new Link(title, homePage);
         this.periods = periods;
-    }
-
-    public Experience(String homePage, String title, Period... periods) {
-        this(homePage, title, Arrays.asList(periods));
     }
 
     public void setHomePage(Link homePage) {

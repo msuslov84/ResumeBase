@@ -13,18 +13,23 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class PathStorage extends AbstractStorage<Path> {
+    private static final Logger LOG = Logger.getLogger(PathStorage.class.getName());
+
     private final Path directory;
     private final Serializer serializer;
 
     public PathStorage(String dir, Serializer serializer) {
         this.serializer = serializer;
-        this.directory = Paths.get(Objects.requireNonNull(dir, "Path storage directory must not be null"));
+        this.directory = Paths.get(Objects.requireNonNull(dir, "Error: the path storage directory must not be null"));
         if (!Files.isDirectory(directory) || !Files.isWritable(directory) || !Files.isReadable(directory)) {
-            throw new StorageException("Path storage '" + directory + "' is not a directory or is not readable/writable");
+            String errorMessage = "Path storage '" + directory.toAbsolutePath() + "' is not a directory or is not readable/writable";
+            LOG.warning(errorMessage);
+            throw new StorageException(errorMessage);
         }
     }
 
@@ -43,8 +48,9 @@ public class PathStorage extends AbstractStorage<Path> {
         try {
             Files.createFile(path);
         } catch (IOException exp) {
-            throw new StorageException("Error creating file by path '" + path.toAbsolutePath() + "'",
-                    getFileName(path), exp);
+            String errorMessage = "Error creating file by path '" + path.toAbsolutePath() + "' for resume " + resume;
+            LOG.warning(errorMessage);
+            throw new StorageException(errorMessage, getFileName(path), exp);
         }
         updateResumeInStorage(path, resume);
     }
@@ -54,7 +60,9 @@ public class PathStorage extends AbstractStorage<Path> {
         try {
             return serializer.readFromFile(new BufferedInputStream(Files.newInputStream(path)));
         } catch (IllegalArgumentException | IOException exp) {
-            throw new StorageException("Error deserializing resume by path '" + path.toAbsolutePath() + "'", exp);
+            String errorMessage = "Error getting resume from the path storage by path '" + path.toAbsolutePath() + "'";
+            LOG.warning(errorMessage);
+            throw new StorageException(errorMessage, exp);
         }
     }
 
@@ -63,8 +71,9 @@ public class PathStorage extends AbstractStorage<Path> {
         try {
             serializer.writeToFile(resume, new BufferedOutputStream(Files.newOutputStream(path)));
         } catch (IOException exp) {
-            throw new StorageException("Error serializing resume by path '" + path.toAbsolutePath() + "'",
-                    resume.getUuid(), exp);
+            String errorMessage = "Error updating resume " + resume + " in the path storage by path '" + path.toAbsolutePath() + "'";
+            LOG.warning(errorMessage);
+            throw new StorageException(errorMessage, resume.getUuid(), exp);
         }
     }
 
@@ -73,8 +82,9 @@ public class PathStorage extends AbstractStorage<Path> {
         try {
             Files.delete(path);
         } catch (IOException exp) {
-            throw new StorageException("Error deleting resume by path '" + path.toAbsolutePath() + "'",
-                    getFileName(path), exp);
+            String errorMessage = "Error deleting resume in the path storage by path '" + path.toAbsolutePath() + "'";
+            LOG.warning(errorMessage);
+            throw new StorageException(errorMessage, getFileName(path), exp);
         }
     }
 
@@ -97,8 +107,9 @@ public class PathStorage extends AbstractStorage<Path> {
         try {
             return Files.list(directory);
         } catch (IOException e) {
-            throw new StorageException("Error getting files from storage by path '" + directory.toAbsolutePath() + "'",
-                    directory.toString(), e);
+            String errorMessage = "Error getting all files from the path storage by path '" + directory.toAbsolutePath() + "'";
+            LOG.warning(errorMessage);
+            throw new StorageException(errorMessage, directory.toString(), e);
         }
     }
 

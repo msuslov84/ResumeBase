@@ -12,12 +12,12 @@ public class SkillList extends AbstractSection {
     public SkillList() {
     }
 
-    public SkillList(List<String> skills) {
-        this.skills = new ArrayList<>(Objects.requireNonNull(skills, "Skills must not be null"));
-    }
-
     public SkillList(String... skills) {
         this(Arrays.asList(skills));
+    }
+
+    public SkillList(List<String> skills) {
+        this.skills = new ArrayList<>(Objects.requireNonNull(skills, "Error: list of skills must not be null"));
     }
 
     public List<String> getSkills() {

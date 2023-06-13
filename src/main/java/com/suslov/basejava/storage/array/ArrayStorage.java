@@ -16,7 +16,6 @@ public class ArrayStorage extends AbstractArrayStorage {
 
     @Override
     protected void insertResume(Resume resume, Integer insertionPoint) {
-        // Добавляем новое резюме в конец списка
         storage[size] = resume;
     }
 }

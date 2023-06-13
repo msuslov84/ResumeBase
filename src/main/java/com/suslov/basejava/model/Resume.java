@@ -40,8 +40,8 @@ public class Resume implements Comparable<Resume>, Serializable {
     }
 
     public Resume(String uuid, String fullName) {
-        Objects.requireNonNull(uuid, "uuid must not be null");
-        Objects.requireNonNull(fullName, "fullName must not be null");
+        Objects.requireNonNull(uuid, "Error: Resume UUID must not be null");
+        Objects.requireNonNull(fullName, "Error: Resume full name must not be null");
         this.uuid = uuid;
         this.fullName = fullName;
     }
@@ -100,7 +100,7 @@ public class Resume implements Comparable<Resume>, Serializable {
 
     @Override
     public String toString() {
-        return uuid + '(' + fullName + ')';
+        return uuid + " (" + fullName + ")";
     }
 
     @Override

@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 // (in particular, uniqueness control)
 public class SqlStorage implements Storage {
     private static final Logger LOG = Logger.getLogger(SqlStorage.class.getName());
+
     private final SqlHelper sqlHelper;
 
     public SqlStorage(String dbUrl, String dbUser, String dbPassword) {
@@ -86,6 +87,7 @@ public class SqlStorage implements Storage {
             ps.setString(1, uuid);
             ResultSet rs = ps.executeQuery();
             if (!rs.next()) {
+                LOG.warning("Resume by UUID '" + uuid + "' doesn't exist");
                 throw new NotExistStorageException(uuid);
             }
             resume = new Resume(uuid, rs.getString("full_name"));
@@ -132,6 +134,7 @@ public class SqlStorage implements Storage {
             ps.setString(1, resume.getFullName());
             ps.setString(2, uuid);
             if (ps.executeUpdate() == 0) {
+                LOG.warning("Resume by UUID '" + uuid + "' doesn't exist");
                 throw new NotExistStorageException(uuid);
             }
         }
@@ -186,6 +189,7 @@ public class SqlStorage implements Storage {
     private void deleteResume(String uuid, PreparedStatement ps) throws SQLException {
         ps.setString(1, uuid);
         if (ps.executeUpdate() == 0) {
+            LOG.warning("Resume by UUID '" + uuid + "' doesn't exist");
             throw new NotExistStorageException(uuid);
         }
     }

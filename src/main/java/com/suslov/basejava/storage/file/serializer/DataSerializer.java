@@ -1,5 +1,6 @@
 package com.suslov.basejava.storage.file.serializer;
 
+import com.suslov.basejava.exception.ParseException;
 import com.suslov.basejava.exception.SerializeException;
 import com.suslov.basejava.model.ContactType;
 import com.suslov.basejava.model.Experience;
@@ -16,22 +17,26 @@ import java.util.*;
 public class DataSerializer implements Serializer {
 
     @Override
-    public void writeToFile(Resume resume, OutputStream out) throws IOException {
+    public void writeToFile(Resume resume, OutputStream out) throws SerializeException {
         try (DataOutputStream dos = new DataOutputStream(out)) {
             dos.writeUTF(resume.getUuid());
             dos.writeUTF(resume.getFullName());
             writeResumeContacts(dos, resume);
             writeResumeSections(dos, resume);
+        } catch (IOException exp) {
+            throw new SerializeException("Error data serialization to file resume '" + resume + "'", exp);
         }
     }
 
     @Override
-    public Resume readFromFile(InputStream in) throws IOException {
+    public Resume readFromFile(InputStream in) throws SerializeException {
         try (DataInputStream dis = new DataInputStream(in)) {
             Resume resume = new Resume(dis.readUTF(), dis.readUTF());
             readResumeContacts(dis, resume);
             readResumeSections(dis, resume);
             return resume;
+        } catch (ParseException | IOException exp) {
+            throw new SerializeException("Error data deserialization from file", exp);
         }
     }
 
@@ -133,7 +138,7 @@ public class DataSerializer implements Serializer {
     private LocalDate convertToLocalDate(String convertValue) throws IllegalArgumentException {
         String[] split = convertValue.split(";");
         if (split.length != 3) {
-            throw new SerializeException("Error parsing local date value '" + convertValue + "'");
+            throw new ParseException("Error parsing local date value '" + convertValue + "'");
         }
         return LocalDate.of(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]));
     }

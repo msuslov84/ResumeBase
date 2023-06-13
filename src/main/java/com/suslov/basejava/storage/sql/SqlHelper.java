@@ -8,8 +8,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.logging.Logger;
 
 public class SqlHelper {
+    private static final Logger LOG = Logger.getLogger(SqlHelper.class.getName());
+
     private final ConnectionFactory factory;
 
     protected SqlHelper(String dbUrl, String dbUser, String dbPassword) {
@@ -44,7 +47,9 @@ public class SqlHelper {
                 exceptionHandle(exp);
             }
         } catch (IllegalArgumentException | SQLException exp) {
-            throw new StorageException("Error of execute SQL query in transaction to database", exp);
+            String errorMessage = "Error of executing SQL query in transaction to database";
+            LOG.warning(errorMessage);
+            throw new StorageException(errorMessage, exp);
         }
     }
 
@@ -61,7 +66,9 @@ public class SqlHelper {
                 return null;
             }
         } catch (IllegalArgumentException | SQLException exp) {
-            throw new StorageException("Error of execute SQL query in transaction to database", exp);
+            String errorMessage = "Error of receiving data by SQL query in transaction to database";
+            LOG.warning(errorMessage);
+            throw new StorageException(errorMessage, exp);
         }
     }
 
@@ -70,9 +77,12 @@ public class SqlHelper {
         // (https://www.postgresql.org/docs/15/errcodes-appendix.html)
         if (exp.getSQLState().equals("23505")) {
             // Duplicate key error, unique constraint violation
+            LOG.warning("Resume already exists");
             throw new ExistStorageException(exp);
         } else {
-            throw new StorageException("Database query execution error", exp);
+            String errorMessage = "Database query execution error";
+            LOG.warning(errorMessage);
+            throw new StorageException(errorMessage, exp);
         }
     }
 }

@@ -1,7 +1,7 @@
 package com.suslov.basejava.web;
 
 import com.suslov.basejava.config.StorageConfig;
-import com.suslov.basejava.exception.WebServletException;
+import com.suslov.basejava.exception.ServletException;
 import com.suslov.basejava.model.ContactType;
 import com.suslov.basejava.model.Experience;
 import com.suslov.basejava.model.Resume;
@@ -10,21 +10,22 @@ import com.suslov.basejava.storage.Storage;
 import com.suslov.basejava.util.DateUtil;
 import com.suslov.basejava.util.HtmlUtil;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class ResumeServlet extends HttpServlet {
+    private static final Logger LOG = Logger.getLogger(ResumeServlet.class.getName());
 
     private final Storage storage = StorageConfig.getInstance().getStorage();
     private final Set<String> themes = new HashSet<>(Set.of(WebTheme.LIGHT.getName(), WebTheme.DARK.getName()));
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
         String uuid = request.getParameter("uuid");
         String action = request.getParameter("action");
         request.setAttribute("theme", getCheckedTheme(request));
@@ -36,7 +37,6 @@ public class ResumeServlet extends HttpServlet {
         }
 
         Resume resume;
-//        Map<SectionType, AbstractSection> sections;
         switch (action) {
             case "delete":
                 storage.delete(uuid);
@@ -44,7 +44,6 @@ public class ResumeServlet extends HttpServlet {
                 return;
             case "view":
                 resume = storage.get(uuid);
-//                sections = resume.getSections();
                 break;
             case "edit":
                 resume = storage.get(uuid);
@@ -67,27 +66,24 @@ public class ResumeServlet extends HttpServlet {
                     }
                     resume.setSection(type, section);
                 }
-//                sections = resume.getSections();
                 break;
             case "create":
                 resume = Resume.EMPTY;
                 resume.setSection(SectionType.OBJECTIVE, Personal.EMPTY);
-//                sections = resume.getSections();
                 break;
             default:
-                throw new WebServletException("Error: entered action '" + action + "' is illegal");
+                String errorMessage = "Error: entered database action '" + action + "' is illegal";
+                LOG.warning(errorMessage);
+                throw new ServletException(errorMessage, uuid);
         }
         request.setAttribute("resume", resume);
-//        request.setAttribute("sections", sections);
         String nextPage = "view".equals(action) ? "/WEB-INF/jsp/view.jsp" : "/WEB-INF/jsp/edit.jsp";
         request.getRequestDispatcher(nextPage).forward(request, response);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         request.setCharacterEncoding("UTF-8");
-
         String uuid = request.getParameter("uuid");
         String fullName = request.getParameter("fullName");
 
@@ -96,22 +92,22 @@ public class ResumeServlet extends HttpServlet {
             return;
         }
 
-        Resume r;
+        Resume resume;
         boolean isNew = false;
         if (HtmlUtil.isEmpty(uuid)) {
-            r = new Resume(fullName);
+            resume = new Resume(fullName);
             isNew = true;
         } else {
-            r = storage.get(uuid);
-            r.setFullName(fullName);
+            resume = storage.get(uuid);
+            resume.setFullName(fullName);
         }
 
         for (ContactType type : ContactType.values()) {
             String value = request.getParameter(type.name());
             if (!HtmlUtil.isEmpty(value)) {
-                r.setContact(type, value);
+                resume.setContact(type, value);
             } else {
-                r.getContacts().remove(type);
+                resume.getContacts().remove(type);
             }
         }
 
@@ -120,56 +116,31 @@ public class ResumeServlet extends HttpServlet {
             String value = request.getParameter(typeName);
             String[] values = request.getParameterValues(typeName);
             if (HtmlUtil.isEmpty(value) && values.length < 2) {
-                r.getSections().remove(type);
+                resume.getSections().remove(type);
             } else {
                 switch (type) {
                     case PERSONAL:
                     case OBJECTIVE:
-                        r.setSection(type, new Personal(value.trim()));
+                        resume.setSection(type, new Personal(value.trim()));
                         break;
                     case ACHIEVEMENT:
                     case QUALIFICATIONS:
-                        r.setSection(type, new SkillList(Arrays.stream(value.split("\n"))
+                        resume.setSection(type, new SkillList(Arrays.stream(value.split("\n"))
                                 .filter(x -> !x.trim().isEmpty())
                                 .collect(Collectors.toList())));
                         break;
                     case EDUCATION:
                     case EXPERIENCE:
-                        String[] urls = request.getParameterValues(typeName + "url");
-
-                        List<Experience> experiences = new ArrayList<>();
-
-                        for (int i = 0; i < values.length; i++) {
-                            String nameOrg = values[i];
-                            String periodMark = typeName + i;
-                            if (!HtmlUtil.isEmpty(nameOrg)) {
-                                List<Experience.Period> periods = new ArrayList<>();
-
-                                String[] titles = request.getParameterValues(periodMark + "title");
-                                String[] descriptions = request.getParameterValues(periodMark + "description");
-                                String[] periodsFrom = request.getParameterValues(periodMark + "periodFrom");
-                                String[] periodsTo = request.getParameterValues(periodMark + "periodTo");
-
-                                for (int j = 0; j < titles.length; j++) {
-                                    String namePeriod = titles[j];
-                                    if (!HtmlUtil.isEmpty(namePeriod)) {
-                                        periods.add(new Experience.Period(namePeriod, DateUtil.parse(periodsFrom[j]),
-                                                DateUtil.parse(periodsTo[j]), descriptions[j]));
-                                    }
-                                }
-                                experiences.add(new Experience(urls[i], nameOrg, periods));
-                            }
-                        }
-                        r.setSection(type, new ExperienceList(experiences));
+                        resume.setSection(type, getExperienceFromRequest(values, typeName, request));
                         break;
                 }
             }
         }
 
         if (isNew) {
-            storage.save(r);
+            storage.save(resume);
         } else {
-            storage.update(r);
+            storage.update(resume);
         }
         response.sendRedirect("resume");
 
@@ -207,5 +178,34 @@ public class ResumeServlet extends HttpServlet {
             }
         }
         return new ExperienceList(experiencesWithEmpty);
+    }
+
+    private AbstractSection getExperienceFromRequest(String[] organizations, String typeName, HttpServletRequest request) {
+        String[] urls = request.getParameterValues(typeName + "url");
+
+        List<Experience> experienceList = new ArrayList<>();
+        for (int i = 0; i < organizations.length; i++) {
+            String nameOrg = organizations[i];
+            String periodMark = typeName + i;
+            if (!HtmlUtil.isEmpty(nameOrg)) {
+                List<Experience.Period> periods = new ArrayList<>();
+
+                String[] titles = request.getParameterValues(periodMark + "title");
+                String[] descriptions = request.getParameterValues(periodMark + "description");
+                String[] periodsFrom = request.getParameterValues(periodMark + "periodFrom");
+                String[] periodsTo = request.getParameterValues(periodMark + "periodTo");
+
+                for (int j = 0; j < titles.length; j++) {
+                    String namePeriod = titles[j];
+                    if (!HtmlUtil.isEmpty(namePeriod)) {
+                        periods.add(new Experience.Period(namePeriod, DateUtil.parse(periodsFrom[j]),
+                                DateUtil.parse(periodsTo[j]), descriptions[j]));
+                    }
+                }
+                experienceList.add(new Experience(urls[i], nameOrg, periods));
+            }
+        }
+
+        return new ExperienceList(experienceList);
     }
 }

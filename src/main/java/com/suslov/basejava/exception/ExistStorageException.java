@@ -10,8 +10,4 @@ public class ExistStorageException extends StorageException {
     public ExistStorageException(Exception e) {
         super("Error: resume already exists", e);
     }
-
-    public ExistStorageException(String uuid, Exception e) {
-        super("Error: resume [" + uuid + "] already exists", uuid, e);
-    }
 }

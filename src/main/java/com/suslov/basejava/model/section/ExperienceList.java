@@ -12,21 +12,17 @@ public class ExperienceList extends AbstractSection {
     public ExperienceList() {
     }
 
+    public ExperienceList(Experience... experiences) {
+        this(Arrays.asList(experiences));
+    }
+
     public ExperienceList(List<Experience> experiences) {
         this.experiences = new ArrayList<>(Objects.requireNonNull(experiences,
                 "Error: list of experiences must not be null"));
     }
 
-    public ExperienceList(Experience... experiences) {
-        this(Arrays.asList(experiences));
-    }
-
     public List<Experience> getExperiences() {
         return Collections.unmodifiableList(experiences);
-    }
-
-    public void addExperience(Experience experience) {
-        experiences.add(Objects.requireNonNull(experience));
     }
 
     @Override
