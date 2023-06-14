@@ -25,7 +25,7 @@ public class ResumeServlet extends HttpServlet {
     private final Set<String> themes = new HashSet<>(Set.of(WebTheme.LIGHT.getName(), WebTheme.DARK.getName()));
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws javax.servlet.ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, javax.servlet.ServletException {
         String uuid = request.getParameter("uuid");
         String action = request.getParameter("action");
         request.setAttribute("theme", getCheckedTheme(request));
@@ -150,7 +150,6 @@ public class ResumeServlet extends HttpServlet {
         String theme = request.getParameter("theme");
         return (theme == null || !themes.contains(theme)) ? WebTheme.LIGHT.getName() : theme;
     }
-
 
     private AbstractSection getNotNullPersonalInformation(AbstractSection section) {
         if (section == null) {
