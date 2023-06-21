@@ -19,11 +19,11 @@ public class DateUtil implements Serializable {
         if (date == null) {
             return "";
         }
-        return date.equals(NOW) ? "to the present time" : date.format(DATE_FORMATTER);
+        return date.equals(NOW) ? "to now" : date.format(DATE_FORMATTER);
     }
 
     public static LocalDate parse(String date) {
-        if (HtmlUtil.isEmpty(date) || "to the present time".equals(date)) {
+        if (HtmlUtil.isEmpty(date) || "to now".equals(date)) {
             return NOW;
         }
         YearMonth yearMonth = YearMonth.parse(date, DATE_FORMATTER);

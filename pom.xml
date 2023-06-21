@@ -99,6 +99,6 @@
   </dependencies>
 
   <build>
-    <finalName>ResumeBase</finalName>
+    <finalName>resume_base</finalName>
   </build>
 </project>
